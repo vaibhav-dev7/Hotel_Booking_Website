@@ -1,0 +1,127 @@
+.booking-layout {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+/* LEFT: 60% */
+.booking-form-area {
+  flex: 3;
+}
+
+/* RIGHT: 40% sticky */
+.price-summary-area {
+  flex: 2;
+  position: sticky;
+  top: 100px;
+}
+
+.info-card, .mb-24 {
+  margin-bottom: 24px;
+}
+
+/* Room info rows */
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.bold {
+  font-weight: 600;
+}
+
+/* Date inputs side by side */
+.dates-row {
+  display: flex;
+  gap: 16px;
+}
+
+.date-group {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+/* Coupon: input + button inline */
+.coupon-row {
+  display: flex;
+  gap: 12px;
+}
+
+.coupon-input {
+  flex: 1;
+}
+
+/* Override toast for inline (no absolute position) */
+.inline-toast {
+  position: relative;
+  top: auto;
+  right: auto;
+  animation: none;
+  margin-top: 16px;
+}
+
+.mt-8 { margin-top: 8px; }
+
+.confirm-btn {
+  width: 100%;
+  padding: 16px;
+  font-size: 16px;
+}
+
+/* PRICE CARD */
+.price-card {
+  background-color: var(--bg-secondary);
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 8px 0;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 8px;
+}
+
+.total-label {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.total-amount {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--accent-success);
+}
+
+@media (max-width: 768px) {
+  .booking-layout {
+    flex-direction: column;
+  }
+  .price-summary-area {
+    position: relative;
+    top: 0;
+    width: 100%;
+  }
+  .dates-row {
+    flex-direction: column;
+  }
+}

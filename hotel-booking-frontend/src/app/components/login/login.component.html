@@ -1,0 +1,65 @@
+<div class="auth-wrapper">
+  <div class="card auth-card">
+    <div class="text-center">
+      <h1 class="page-title">🏨 Welcome Back</h1>
+      <p class="text-secondary subtitle">Sign in to your account</p>
+    </div>
+
+    <!-- Error Message Banner -->
+    <div *ngIf="errorMessage" class="toast toast-error form-group">
+      {{ errorMessage }}
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <!-- Email -->
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input
+          type="email"
+          class="form-input"
+          placeholder="✉️ user@example.com"
+          formControlName="email">
+        <div *ngIf="email?.invalid && email?.touched" class="field-error">
+          <span *ngIf="email?.errors?.['required']">Email is required.</span>
+          <span *ngIf="email?.errors?.['email']">Enter a valid email address.</span>
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group password-group">
+        <label class="form-label">Password</label>
+        <div class="password-wrapper">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            class="form-input"
+            placeholder="🔒 Enter password"
+            formControlName="password">
+          <button type="button" class="eye-btn text-muted" (click)="togglePassword()">
+            {{ showPassword ? '👁️' : '👁️‍🗨️' }}
+          </button>
+        </div>
+        <div *ngIf="password?.invalid && password?.touched" class="field-error">
+          <span *ngIf="password?.errors?.['required']">Password is required.</span>
+          <span *ngIf="password?.errors?.['minlength']">Password must be at least 6 characters.</span>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        class="btn-primary full-width"
+        [disabled]="isLoading">
+
+        <span *ngIf="isLoading" class="spinner"></span>
+        <span *ngIf="!isLoading">SIGN IN</span>
+      </button>
+    </form>
+
+    <div class="text-center mt-24">
+      <p class="text-secondary">
+        Don't have an account?
+        <a routerLink="/register" class="auth-link">Register here</a>
+      </p>
+    </div>
+  </div>
+</div>

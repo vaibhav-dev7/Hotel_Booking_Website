@@ -1,0 +1,212 @@
+<div class="container">
+  <h1 class="page-title">⚙️ Admin Dashboard</h1>
+
+  <!-- TAB NAVIGATION -->
+  <div class="tab-bar">
+    <button class="tab-btn" [class.active]="activeTab === 'hotels'" (click)="setActiveTab('hotels')">
+      🏨 Hotels
+    </button>
+    <button class="tab-btn" [class.active]="activeTab === 'rooms'" (click)="setActiveTab('rooms')">
+      🛏️ Rooms
+    </button>
+    <button class="tab-btn" [class.active]="activeTab === 'coupons'" (click)="setActiveTab('coupons')">
+      🎟️ Coupons
+    </button>
+  </div>
+
+  <!-- ===================== HOTELS TAB ===================== -->
+  <div *ngIf="activeTab === 'hotels'">
+
+    <!-- ADD HOTEL FORM -->
+    <div class="card form-card">
+      <h2 class="section-title">Add New Hotel</h2>
+      <div *ngIf="hotelSuccess" class="toast toast-success inline-toast">{{ hotelSuccess }}</div>
+      <div *ngIf="hotelError"   class="toast toast-error   inline-toast">{{ hotelError }}</div>
+
+      <form [formGroup]="hotelForm" (ngSubmit)="addHotel()">
+        <div class="inline-form">
+          <div class="form-group flex-1">
+            <label class="form-label">Hotel Name *</label>
+            <input type="text" class="form-input" placeholder="e.g. Grand Hyatt"
+                   formControlName="name">
+            <div *ngIf="hotelForm.get('name')?.invalid && hotelForm.get('name')?.touched" class="field-error">
+              Hotel name is required.
+            </div>
+          </div>
+          <div class="form-group flex-1">
+            <label class="form-label">Location *</label>
+            <input type="text" class="form-input" placeholder="e.g. Mumbai"
+                   formControlName="location">
+            <div *ngIf="hotelForm.get('location')?.invalid && hotelForm.get('location')?.touched" class="field-error">
+              Location is required.
+            </div>
+          </div>
+          <div class="form-group flex-2">
+            <label class="form-label">Description</label>
+            <input type="text" class="form-input" placeholder="Brief description..."
+                   formControlName="description">
+          </div>
+          <div class="form-group">
+            <label class="form-label">&nbsp;</label>
+            <button type="submit" class="btn-primary">ADD HOTEL</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- HOTELS TABLE -->
+    <div class="card">
+      <h2 class="section-title">All Hotels ({{ hotels.length }})</h2>
+      <table class="data-table" *ngIf="hotels.length > 0">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Location</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let hotel of hotels">
+            <td class="text-muted">{{ hotel.hotelId }}</td>
+            <td class="bold">{{ hotel.name }}</td>
+            <td class="text-secondary">{{ hotel.location }}</td>
+            <td class="text-muted desc-cell">{{ hotel.description }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div *ngIf="hotels.length === 0" class="empty-state">No hotels yet. Add one above!</div>
+    </div>
+  </div>
+
+  <!-- ===================== ROOMS TAB ===================== -->
+  <div *ngIf="activeTab === 'rooms'">
+
+    <div class="card form-card">
+      <h2 class="section-title">Add New Room</h2>
+      <div *ngIf="roomSuccess" class="toast toast-success inline-toast">{{ roomSuccess }}</div>
+      <div *ngIf="roomError"   class="toast toast-error   inline-toast">{{ roomError }}</div>
+
+      <form [formGroup]="roomForm" (ngSubmit)="addRoom()">
+        <div class="rooms-form-grid">
+          <div class="form-group">
+            <label class="form-label">Hotel *</label>
+            <select class="form-input" formControlName="hotelId">
+              <option [value]="0" disabled>Select hotel...</option>
+              <option *ngFor="let hotel of hotels" [value]="hotel.hotelId">{{ hotel.name }}</option>
+            </select>
+            <div *ngIf="roomForm.get('hotelId')?.invalid && roomForm.get('hotelId')?.touched" class="field-error">
+              Please select a hotel.
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Room Type *</label>
+            <input type="text" class="form-input" placeholder="e.g. Deluxe"
+                   formControlName="roomType">
+            <div *ngIf="roomForm.get('roomType')?.invalid && roomForm.get('roomType')?.touched" class="field-error">
+              Room type is required.
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Price/Night (₹) *</label>
+            <input type="number" class="form-input" placeholder="e.g. 2500"
+                   formControlName="pricePerNight">
+            <div *ngIf="roomForm.get('pricePerNight')?.invalid && roomForm.get('pricePerNight')?.touched" class="field-error">
+              Enter a valid price.
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Capacity</label>
+            <input type="number" class="form-input" placeholder="e.g. 2"
+                   formControlName="capacity">
+          </div>
+        </div>
+
+        <!-- Amenities checkboxes via FormRecord -->
+        <div class="form-group" [formGroup]="amenityForm">
+          <label class="form-label">Amenities</label>
+          <div class="checkbox-grid">
+            <label class="checkbox-label" *ngFor="let amenity of getAmenityKeys()">
+              <input type="checkbox" [formControlName]="amenity">
+              {{ amenity }}
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary">ADD ROOM</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <p class="text-secondary text-center">
+        Rooms are associated with hotels. Use the Hotels tab to view hotel IDs,
+        then search rooms in the Hotel Rooms view from your frontend.
+      </p>
+    </div>
+  </div>
+
+  <!-- ===================== COUPONS TAB ===================== -->
+  <div *ngIf="activeTab === 'coupons'">
+
+    <div class="card form-card">
+      <h2 class="section-title">Create Coupon</h2>
+      <div *ngIf="couponSuccess" class="toast toast-success inline-toast">{{ couponSuccess }}</div>
+      <div *ngIf="couponError"   class="toast toast-error   inline-toast">{{ couponError }}</div>
+
+      <form [formGroup]="couponForm" (ngSubmit)="createCoupon()">
+        <div class="inline-form">
+          <div class="form-group flex-1">
+            <label class="form-label">Coupon Code *</label>
+            <input type="text" class="form-input" placeholder="e.g. SAVE20"
+                   formControlName="code">
+            <div *ngIf="couponForm.get('code')?.invalid && couponForm.get('code')?.touched" class="field-error">
+              Coupon code is required.
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Discount % *</label>
+            <input type="number" class="form-input" placeholder="e.g. 20" min="1" max="100"
+                   formControlName="discountPercentage">
+            <div *ngIf="couponForm.get('discountPercentage')?.invalid && couponForm.get('discountPercentage')?.touched" class="field-error">
+              Enter a value between 1 and 100.
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Expiry Date *</label>
+            <input type="date" class="form-input" [min]="todayDate"
+                   formControlName="expiryDate">
+            <div *ngIf="couponForm.get('expiryDate')?.invalid && couponForm.get('expiryDate')?.touched" class="field-error">
+              Expiry date is required.
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">&nbsp;</label>
+            <button type="submit" class="btn-primary">CREATE COUPON</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Session-created coupons list -->
+    <div class="card" *ngIf="createdCoupons.length > 0">
+      <h2 class="section-title">Created This Session</h2>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Discount</th>
+            <th>Expiry</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let coupon of createdCoupons">
+            <td class="bold accent-text">{{ coupon.code }}</td>
+            <td><span class="badge badge-success">{{ coupon.discountPercentage }}%</span></td>
+            <td class="text-secondary">{{ coupon.expiryDate }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>

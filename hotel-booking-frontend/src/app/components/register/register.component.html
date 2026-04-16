@@ -1,0 +1,82 @@
+<div class="auth-wrapper">
+  <div class="card auth-card">
+    <div class="text-center">
+      <h1 class="page-title">🏨 Create Account</h1>
+      <p class="text-secondary subtitle">Join us to start booking</p>
+    </div>
+
+    <!-- Feedback Banners -->
+    <div *ngIf="errorMessage" class="toast toast-error form-group">
+      {{ errorMessage }}
+    </div>
+    <div *ngIf="successMessage" class="toast toast-success form-group">
+      {{ successMessage }}
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <!-- Full Name -->
+      <div class="form-group">
+        <label class="form-label">Full Name</label>
+        <input
+          type="text"
+          class="form-input"
+          placeholder="👤 Jane Doe"
+          formControlName="name">
+        <div *ngIf="name?.invalid && name?.touched" class="field-error">
+          <span *ngIf="name?.errors?.['required']">Name is required.</span>
+          <span *ngIf="name?.errors?.['minlength']">Name must be at least 2 characters.</span>
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input
+          type="email"
+          class="form-input"
+          placeholder="✉️ jane@example.com"
+          formControlName="email">
+        <div *ngIf="email?.invalid && email?.touched" class="field-error">
+          <span *ngIf="email?.errors?.['required']">Email is required.</span>
+          <span *ngIf="email?.errors?.['email']">Enter a valid email address.</span>
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div class="password-wrapper">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            class="form-input"
+            placeholder="🔒 Create a strong password"
+            formControlName="password">
+          <button type="button" class="eye-btn text-muted" (click)="togglePassword()">
+            {{ showPassword ? '👁️' : '👁️‍🗨️' }}
+          </button>
+        </div>
+        <div *ngIf="password?.invalid && password?.touched" class="field-error">
+          <span *ngIf="password?.errors?.['required']">Password is required.</span>
+          <span *ngIf="password?.errors?.['minlength']">Password must be at least 6 characters.</span>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        class="btn-primary full-width"
+        [disabled]="isLoading">
+
+        <span *ngIf="isLoading" class="spinner"></span>
+        <span *ngIf="!isLoading">CREATE ACCOUNT</span>
+      </button>
+    </form>
+
+    <div class="text-center mt-24">
+      <p class="text-secondary">
+        Already have an account?
+        <a routerLink="/login" class="auth-link">Sign in here</a>
+      </p>
+    </div>
+  </div>
+</div>

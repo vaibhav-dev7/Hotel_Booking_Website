@@ -1,0 +1,73 @@
+<div class="container">
+  <h1 class="page-title">📜 My Bookings</h1>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="empty-state">
+    <div class="spinner"></div>
+    <p class="mt-16">Fetching your bookings...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && bookings.length === 0" class="empty-state">
+    <h3>You haven't made any bookings yet. 🛏️</h3>
+    <a routerLink="/hotels" class="btn-primary" style="margin-top: 24px; display: inline-block;">Browse Hotels →</a>
+  </div>
+
+  <!-- Booking Cards -->
+  <div class="bookings-list" *ngIf="!isLoading && bookings.length > 0">
+    <div class="booking-card card" *ngFor="let booking of bookings">
+
+      <!-- TOP ROW: Reservation # and Date range -->
+      <div class="top-row">
+        <span class="reservation-number">{{ booking.reservationNumber }}</span>
+        <span class="text-secondary date-range">
+          {{ booking.checkInDate | date:'mediumDate' }} → {{ booking.checkOutDate | date:'mediumDate' }}
+        </span>
+      </div>
+
+      <!-- MIDDLE ROW: Hotel info, room type, amount, coupon -->
+      <div class="middle-row">
+        <div class="hotel-info">
+          <span class="hotel-name">{{ booking.hotelName }}</span>
+          <span class="text-secondary location-text">📍 {{ booking.hotelLocation }}</span>
+        </div>
+        <span class="badge badge-amenity">{{ booking.roomType }}</span>
+        <div class="amount-area">
+          <span class="total-amount">₹{{ booking.totalAmount }}</span>
+          <span *ngIf="booking.couponCode" class="badge badge-amenity coupon-badge">🎟️ {{ booking.couponCode }}</span>
+        </div>
+      </div>
+
+      <!-- BOTTOM ROW: Action buttons -->
+      <div class="bottom-row">
+        <button class="btn-outline btn-sm" (click)="quickRebook(booking)">🔄 Quick Rebook</button>
+        <button class="btn-secondary btn-sm" (click)="toggleDetails(booking.bookingId)">
+          📋 {{ isExpanded(booking.bookingId) ? 'Hide Details' : 'View Details' }}
+        </button>
+      </div>
+
+      <!-- EXPANDED DETAILS PANEL -->
+      <div class="details-panel" *ngIf="isExpanded(booking.bookingId)">
+        <div class="details-grid">
+          <div class="detail-item">
+            <span class="form-label">Booking ID</span>
+            <span class="text-primary">#{{ booking.bookingId }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="form-label">Room ID</span>
+            <span class="text-primary">{{ booking.roomId }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="form-label">Discount</span>
+            <span style="color: var(--accent-success)">-₹{{ booking.discountAmount }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="form-label">Booked On</span>
+            <span class="text-secondary">{{ booking.createdAt | date:'medium' }}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

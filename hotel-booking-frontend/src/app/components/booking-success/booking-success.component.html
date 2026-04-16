@@ -1,0 +1,64 @@
+<div class="success-wrapper">
+  <div class="success-card card">
+
+    <!-- Animated Checkmark -->
+    <div class="checkmark-circle">
+      <span class="checkmark">✓</span>
+    </div>
+
+    <!-- Title -->
+    <h1 class="success-title">BOOKING CONFIRMED! 🎉</h1>
+    <p class="success-subtitle text-secondary">Your reservation is locked in and ready.</p>
+
+    <!-- Booking Details Card -->
+    <div class="details-card" *ngIf="booking">
+      
+      <div class="detail-row">
+        <span class="form-label">Reservation #</span>
+        <span class="reservation-number">{{ booking.reservationNumber }}</span>
+      </div>
+
+      <div class="detail-row">
+        <span class="form-label">Hotel</span>
+        <span class="text-primary">{{ booking.hotelName }}</span>
+      </div>
+
+      <div class="detail-row">
+        <span class="form-label">Room Type</span>
+        <span class="text-primary">{{ booking.roomType }}</span>
+      </div>
+
+      <div class="detail-row">
+        <span class="form-label">Check-in</span>
+        <span class="text-primary">{{ booking.checkInDate | date: 'mediumDate' }}</span>
+      </div>
+
+      <div class="detail-row">
+        <span class="form-label">Check-out</span>
+        <span class="text-primary">{{ booking.checkOutDate | date: 'mediumDate' }}</span>
+      </div>
+
+      <div class="detail-row" *ngIf="booking.discountAmount > 0">
+        <span class="form-label">Discount</span>
+        <span style="color: var(--accent-success)">-₹{{ booking.discountAmount }}</span>
+      </div>
+
+      <div class="detail-row total-row">
+        <span class="form-label bold">TOTAL PAID</span>
+        <span class="total-amount">₹{{ booking.totalAmount }}</span>
+      </div>
+    </div>
+
+    <!-- Email Notice -->
+    <p class="email-notice text-secondary">
+      📧 Confirmation email sent to your registered email address.
+    </p>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <a routerLink="/my-bookings" class="btn-outline">View My Bookings</a>
+      <a routerLink="/hotels" class="btn-primary">Browse More Hotels</a>
+    </div>
+
+  </div>
+</div>

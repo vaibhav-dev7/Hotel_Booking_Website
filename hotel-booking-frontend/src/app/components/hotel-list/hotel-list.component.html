@@ -1,0 +1,125 @@
+<div class="container main-layout">
+  
+  <!-- LEFT SIDEBAR: FILTERS -->
+  <aside class="filter-sidebar">
+    <div class="filter-header">
+      <h2 class="section-title">🔍 Filters</h2>
+      <a href="javascript:void(0)" class="clear-link" (click)="clearAll()">Clear All</a>
+    </div>
+
+    <!-- Reactive Form -->
+    <form [formGroup]="filterForm" (ngSubmit)="applyFilters()">
+      
+      <!-- Location Block -->
+      <div class="form-group">
+        <label class="form-label">Location</label>
+        <input type="text" class="form-input" placeholder="Enter city..." formControlName="location">
+      </div>
+
+      <!-- Quick 50/50 CSS Grid block -->
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label">Min Price</label>
+          <input type="number" class="form-input" placeholder="Min ₹" formControlName="minPrice">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Max Price</label>
+          <input type="number" class="form-input" placeholder="Max ₹" formControlName="maxPrice">
+        </div>
+      </div>
+
+      <!-- Date Blocks safely prevented from negative intervals via dynamically derived [min] property tags -->
+      <div class="form-group">
+        <label class="form-label">Check-in Date</label>
+        <input type="date" class="form-input" [min]="todayDate" formControlName="checkIn">
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Check-out Date</label>
+        <input type="date" class="form-input" [min]="minCheckOutDate" formControlName="checkOut">
+      </div>
+
+      <!-- Multi-checkbox using nested FormGroup -->
+      <div class="form-group pb-16" formGroupName="amenities">
+        <label class="form-label">Amenities</label>
+        <div class="checkbox-grid">
+          <label class="checkbox-label" *ngFor="let amenity of amenitiesList">
+            <input type="checkbox" [formControlName]="amenity">
+            {{ amenity }}
+          </label>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-primary full-width">APPLY FILTERS</button>
+    </form>
+  </aside>
+
+  <!-- RIGHT PORTION: CARDS GRID -->
+  <section class="results-area">
+    
+    <div class="results-header">
+      <h1 class="page-title">Explore Stays</h1>
+      <!-- Reading signals with () — Angular tracks these reads for fine-grained reactivity -->
+      <p *ngIf="isFiltered() && !isLoading()" class="text-secondary">Showing {{ resultCount() }} matching rooms</p>
+      <p *ngIf="!isFiltered() && !isLoading()" class="text-secondary">Showing ALL {{ hotelCount() }} destinations</p>
+    </div>
+
+    <!-- Dynamic System Loader — isLoading() reads the signal value -->
+    <div *ngIf="isLoading()" class="empty-state">
+      <div class="spinner"></div>
+      <p class="mt-16">Finding the perfect stays for you...</p>
+    </div>
+
+    <!-- Fallback if array collapses physically empty -->
+    <div *ngIf="!isLoading() && ((!isFiltered() && hotelCount() === 0) || (isFiltered() && resultCount() === 0))" class="empty-state">
+      <h3>No hotels match your criteria. 😢</h3>
+      <p>Try adjusting your filters or dates!</p>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- GRID A: NO FILTERS APPLIED (SHOW ENTIRE HOTELS) -->
+    <!-- ============================================== -->
+    <div *ngIf="!isLoading() && !isFiltered()" class="grid-3">
+      <!-- hotels() calls the signal to get the current array value -->
+      <div class="card hotel-card" *ngFor="let hotel of hotels()">
+        <!-- Magic Gradient Box -->
+        <div class="image-placeholder"></div>
+        <div class="card-content">
+          <h3 class="hotel-name">{{ hotel.name }}</h3>
+          <p class="hotel-location text-secondary">📍 {{ hotel.location }}</p>
+          <p class="hotel-desc text-muted">{{ hotel.description }}</p>
+          
+          <button class="btn-primary full-width mt-16" [routerLink]="['/hotels', hotel.hotelId, 'rooms']">
+            Browse Rooms &rarr;
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- GRID B: FILTERS APPLIED (SHOW SPECIFIC ROOMS)   -->
+    <!-- ============================================== -->
+    <div *ngIf="!isLoading() && isFiltered()" class="grid-3">
+      <!-- searchResults() calls the signal to get the current array value -->
+      <div class="card hotel-card" *ngFor="let result of searchResults()">
+        <div class="image-placeholder"></div>
+        <div class="card-content">
+          <h3 class="hotel-name">{{ result.hotelName }}</h3>
+          <p class="hotel-location text-secondary">📍 {{ result.location }}</p>
+          
+          <div class="room-badges mt-16">
+            <span class="badge badge-success">{{ result.roomType }}</span>
+            <span class="badge badge-amenity">👤 {{ result.capacity }} Guests</span>
+          </div>
+
+          <p class="text-price mt-16">₹{{ result.pricePerNight }}<span class="text-secondary" style="font-size: 14px; font-weight: normal;"> /night</span></p>
+          
+          <button class="btn-primary full-width mt-16" [routerLink]="['/hotels', result.hotelId, 'rooms']">
+            Select &rarr;
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </section>
+</div>

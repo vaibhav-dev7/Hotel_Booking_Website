@@ -1,0 +1,48 @@
+<nav class="navbar">
+  <!-- LEFT: LOGO -->
+  <div class="logo-area">
+    <a routerLink="/hotels" class="logo text-primary">🏨 StayEase</a>
+  </div>
+
+  <!-- CENTER: SEARCH -->
+  <div class="search-area">
+    <!-- Listen for 'Enter' key inherently via form wrapper ngSubmit -->
+    <form (ngSubmit)="onSearch()">
+      <input 
+        type="text" 
+        class="nav-search form-input" 
+        placeholder="Search hotels by location..." 
+        [(ngModel)]="searchQuery" 
+        name="searchQuery" 
+        autocomplete="off"
+      >
+    </form>
+  </div>
+
+  <!-- RIGHT: NAVIGATION & AUTH -->
+  <div class="actions-area">
+    <!-- Unrestricted links -->
+    <a routerLink="/hotels" routerLinkActive="active-link" class="nav-link">Hotels</a>
+
+    <!-- Using Angular 17+ core @if control flow on Signals dynamically -->
+    @if (authService.isLoggedIn()) {
+      
+      <!-- Non-admins mapping -->
+      @if (!authService.isAdmin()) {
+        <a routerLink="/my-bookings" routerLinkActive="active-link" class="nav-link">My Bookings</a>
+      }
+      
+      <!-- Admins mapping -->
+      @if (authService.isAdmin()) {
+        <a routerLink="/admin" routerLinkActive="active-link" class="nav-link text-warning">Admin Panel</a>
+      }
+
+      <span class="user-greeting">👤 {{ authService.userName() }}</span>
+      <button class="btn-danger btn-sm" (click)="logout()">Logout</button>
+      
+    } @else {
+      <!-- Not Logged In Fallback -->
+      <a routerLink="/login" class="btn-outline">Login</a>
+    }
+  </div>
+</nav>

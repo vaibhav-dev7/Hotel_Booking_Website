@@ -1,0 +1,56 @@
+.auth-wrapper {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 40px;
+}
+
+.subtitle {
+  margin-top: -16px;
+  margin-bottom: 32px;
+}
+
+.full-width {
+  width: 100%;
+  margin-top: 16px;
+}
+
+.password-wrapper {
+  position: relative;
+}
+
+.eye-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.auth-link {
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.mt-24 {
+  margin-top: 24px;
+}
+
+/* Toast behavior inside card override */
+.toast {
+  position: relative;
+  top: auto;
+  right: auto;
+  animation: none;
+  margin-bottom: 24px;
+}

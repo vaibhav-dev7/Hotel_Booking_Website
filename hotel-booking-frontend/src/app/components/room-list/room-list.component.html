@@ -1,0 +1,99 @@
+<div class="container">
+
+  <!-- BACK LINK -->
+  <a routerLink="/hotels" class="back-link">← Back to Hotels</a>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <h1 class="page-title">Available Rooms</h1>
+    <p *ngIf="!isLoading" class="text-secondary">{{ rooms.length }} room(s) found for this hotel</p>
+  </div>
+
+  <!-- LOADING STATE -->
+  <div *ngIf="isLoading" class="empty-state">
+    <div class="spinner"></div>
+    <p class="mt-16">Loading rooms...</p>
+  </div>
+
+  <!-- EMPTY STATE -->
+  <div *ngIf="!isLoading && rooms.length === 0" class="empty-state">
+    <h3>No rooms found for this hotel.</h3>
+    <p class="text-muted">Please try a different hotel.</p>
+  </div>
+
+  <!-- ROOM CARDS LIST -->
+  <div class="rooms-list" *ngIf="!isLoading && rooms.length > 0">
+    <div class="room-card card" *ngFor="let room of rooms">
+
+      <!-- ROOM HEADER ROW -->
+      <div class="room-header">
+        <div>
+          <h2 class="room-type">{{ room.roomType }}</h2>
+          <p class="text-secondary capacity-text">👤 {{ room.capacity }} Guests</p>
+        </div>
+        <div class="price-area">
+          <span class="text-price">₹{{ room.pricePerNight }}</span>
+          <span class="text-muted price-unit">/night</span>
+        </div>
+      </div>
+
+      <!-- AMENITY BADGES -->
+      <div class="amenities-row" *ngIf="room.amenities?.length">
+        <span class="badge badge-amenity" *ngFor="let amenity of room.amenities">{{ amenity }}</span>
+      </div>
+
+      <!-- DATE INPUTS ROW — Each room has its own [formGroup] -->
+      <div class="dates-row" [formGroup]="roomForms[room.roomId]">
+        <div class="form-group date-group">
+          <label class="form-label">Check-in Date</label>
+          <input 
+            type="date" 
+            class="form-input"
+            [min]="todayDate"
+            formControlName="checkIn">
+        </div>
+        <div class="form-group date-group">
+          <label class="form-label">Check-out Date</label>
+          <input 
+            type="date" 
+            class="form-input"
+            [min]="getMinCheckOut(room.roomId)"
+            formControlName="checkOut">
+        </div>
+      </div>
+
+      <!-- AVAILABILITY ACTIONS -->
+      <div class="actions-row">
+        <!-- CHECK AVAILABILITY BUTTON -->
+        <button 
+          class="btn-outline"
+          [disabled]="!canCheck(room.roomId)"
+          (click)="checkAvailability(room.roomId)">
+          
+          <span *ngIf="roomStates[room.roomId].status === 'checking'" class="spinner"></span>
+          <span *ngIf="roomStates[room.roomId].status !== 'checking'">CHECK AVAILABILITY</span>
+        </button>
+
+        <!-- AVAILABILITY RESULT + BOOK NOW -->
+        <ng-container *ngIf="roomStates[room.roomId].isChecked">
+          
+          <!-- AVAILABLE -->
+          <ng-container *ngIf="roomStates[room.roomId].status === 'available'">
+            <span class="availability-text available-text">✅ Room is available!</span>
+            <button class="btn-primary" (click)="bookRoom(room.roomId)">BOOK NOW</button>
+          </ng-container>
+
+          <!-- UNAVAILABLE -->
+          <span 
+            *ngIf="roomStates[room.roomId].status === 'unavailable'" 
+            class="availability-text unavailable-text">
+            ❌ Room is not available for selected dates
+          </span>
+
+        </ng-container>
+      </div>
+
+    </div>
+  </div>
+
+</div>
